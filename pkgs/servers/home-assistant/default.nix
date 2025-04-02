@@ -128,16 +128,6 @@ let
         build-system = with self; [ poetry-core ];
       });
 
-      google-genai = super.google-genai.overridePythonAttrs (old: rec {
-        version = "1.1.0";
-        src = fetchFromGitHub {
-          owner = "googleapis";
-          repo = "python-genai";
-          tag = "v${version}";
-          hash = "sha256-CszKr2dvo0dLMAD/FZHSosCczeAFDD0xxKysGNv4RxM=";
-        };
-      });
-
       gspread = super.gspread.overridePythonAttrs (oldAttrs: rec {
         version = "5.12.4";
         src = fetchFromGitHub {
@@ -271,28 +261,6 @@ let
         };
       });
 
-      pyopenweathermap = super.pyopenweathermap.overridePythonAttrs (old: rec {
-        version = "0.2.1";
-        src = fetchFromGitHub {
-          owner = "freekode";
-          repo = "pyopenweathermap";
-          tag = "v${version}";
-          hash = "sha256-UcnELAJf0Ltf0xJOlyzsHb4HQGSBTJ+/mOZ/XSTkA0w=";
-        };
-      });
-
-      pyrail = super.pyrail.overridePythonAttrs (rec {
-        version = "0.0.3";
-        src = fetchPypi {
-          pname = "pyrail";
-          inherit version;
-          hash = "sha256-XxcVcRXMjYAKevANAqNJkGDUWfxDaLqgCL6XL9Lhsf4=";
-        };
-        env.CI_JOB_ID = version;
-        build-system = [ self.setuptools ];
-        dependencies = [ self.requests ];
-      });
-
       # snmp component does not support pysnmp 7.0+
       pysnmp = super.pysnmp.overridePythonAttrs (oldAttrs: rec {
         version = "6.2.6";
@@ -393,7 +361,7 @@ let
   extraBuildInputs = extraPackages python.pkgs;
 
   # Don't forget to run update-component-packages.py after updating
-  hassVersion = "2025.3.4";
+  hassVersion = "2025.4.0";
 
 in
 python.pkgs.buildPythonApplication rec {
@@ -414,47 +382,20 @@ python.pkgs.buildPythonApplication rec {
     owner = "home-assistant";
     repo = "core";
     tag = version;
-    hash = "sha256-g1t9xAjrSSePyAloTQ2qwxAGEXJUTWX2zIZmAvlGGa8=";
+    hash = "sha256-AEJQueoHLp6xRFYVQ9cwSMFvlgwrMGJ1JUMnosk2qHg=";
   };
 
   # Secondary source is pypi sdist for translations
   sdist = fetchPypi {
     inherit pname version;
-    hash = "sha256-MIh8FMTKZVEZ/zC+Av8fykTpz9kkXgZZfnsuOZbgP0M=";
+    hash = "sha256-wflwLkqTXaBh1flSVNJcA5KChipRCzZD7nb7VaK2EPM=";
   };
 
   build-system = with python.pkgs; [
     setuptools
   ];
 
-  pythonRelaxDeps = [
-    "aiohttp"
-    "aiozoneinfo"
-    "attrs"
-    "bcrypt"
-    "ciso8601"
-    "cryptography"
-    "fnv-hash-fast"
-    "hass-nabucasa"
-    "httpx"
-    "jinja2"
-    "orjson"
-    "pillow"
-    "propcache"
-    "pyjwt"
-    "pyopenssl"
-    "pyyaml"
-    "requests"
-    "securetar"
-    "sqlalchemy"
-    "typing-extensions"
-    "ulid-transform"
-    "urllib3"
-    "uv"
-    "voluptuous-openapi"
-    "yarl"
-    "zeroconf"
-  ];
+  pythonRelaxDeps = true;
 
   # extract translations from pypi sdist
   prePatch = ''
@@ -487,6 +428,7 @@ python.pkgs.buildPythonApplication rec {
     aiohttp-cors
     aiohttp-fast-zlib
     aiozoneinfo
+    annotatedyaml
     astral
     async-interrupt
     atomicwrites-homeassistant
@@ -499,20 +441,27 @@ python.pkgs.buildPythonApplication rec {
     cronsim
     cryptography
     fnv-hash-fast
+    ha-ffmpeg
     hass-nabucasa
     home-assistant-bluetooth
+    home-assistant-intents
     httpx
     ifaddr
     jinja2
     lru-dict
+    mutagen
+    numpy
     orjson
     packaging
     pillow
     propcache
     psutil-home-assistant
     pyjwt
+    pymicro-vad
     pyopenssl
+    pyspeex-noise
     python-slugify
+    pyturbojpeg
     pyyaml
     requests
     securetar
@@ -526,7 +475,9 @@ python.pkgs.buildPythonApplication rec {
     voluptuous
     voluptuous-openapi
     voluptuous-serialize
+    webrtc-models
     yarl
+    zeroconf
     # REQUIREMENTS in homeassistant/auth/mfa_modules/totp.py and homeassistant/auth/mfa_modules/notify.py
     pyotp
     pyqrcode
