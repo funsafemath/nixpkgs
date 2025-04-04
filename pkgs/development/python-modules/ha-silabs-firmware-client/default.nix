@@ -1,5 +1,6 @@
 {
   aiohttp,
+  aioresponses,
   buildPythonPackage,
   fetchFromGitHub,
   lib,
@@ -39,6 +40,7 @@ buildPythonPackage rec {
   pythonImportsCheck = [ "ha_silabs_firmware_client" ];
 
   nativeCheckInputs = [
+    aioresponses
     pytestCheckHook
   ];
 
