@@ -128,6 +128,16 @@ let
         build-system = with self; [ poetry-core ];
       });
 
+      google-genai = super.google-genai.overridePythonAttrs (old: rec {
+        version = "1.7.0";
+        src = fetchFromGitHub {
+          owner = "googleapis";
+          repo = "python-genai";
+          tag = "v${version}";
+          hash = "sha256-vmrFPE7H9s9varrP0s6WK4opoU1hREH7rVVjrKiXY5E=";
+        };
+      });
+
       gspread = super.gspread.overridePythonAttrs (oldAttrs: rec {
         version = "5.12.4";
         src = fetchFromGitHub {
